@@ -1,0 +1,1 @@
+catkin_make -DCATKIN_WHITELIST_PACKAGES="aruco_ros"

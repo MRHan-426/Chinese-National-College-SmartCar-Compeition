@@ -1,0 +1,14 @@
+<launch>
+  <arg name="device" default="" />
+  <!-- 跑play.py时，保留此行，注释下行 -->
+  <node name="play" pkg="sound_play" type="play_all_pictures.py" output="screen"/>
+
+  <!-- 跑play135.py时，保留此行，注释上行 -->
+  <!--node name="play" pkg="sound_play" type="play135.py" output="screen"/-->
+
+  <!-- <node name="play" pkg="sound_play" type="play147.py" output="screen"/> -->
+  <!--node name="play" pkg="sound_play" type="play156.py" output="screen"/-->
+
+  <!--node name="play" pkg="sound_play" type="play_no_stop.py" output="screen"/-->
+
+</launch>

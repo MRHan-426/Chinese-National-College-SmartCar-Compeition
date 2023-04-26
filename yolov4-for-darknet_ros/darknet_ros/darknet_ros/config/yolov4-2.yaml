@@ -1,0 +1,45 @@
+yolo_model:
+
+  config_file:
+    name: yolov4-tiny.cfg
+  weight_file:
+    name: yolov4-tiny.weights
+  threshold:
+    value: 0.3
+  detection_classes:
+    names:
+     - bed1
+     - bed2
+     - bed3
+     - bed4
+     - food1
+     - food2
+     - food3
+     - food4
+     - person1
+     - person2
+     - person3
+     - person4
+     - pet1
+     - pet2
+     - pet3
+     - pet4
+     - sofa1
+     - sofa2
+     - sofa3
+     - sofa4
+     - tableanchair1
+     - tableanchair2
+     - tableanchair3
+     - tableanchair4
+     - tableware1
+     - tableware2
+     - tableware3
+     - tableware4
+     - tv1
+     - tv2
+     - tv3
+     - tv4
+
+
+
