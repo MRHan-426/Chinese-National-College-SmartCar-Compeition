@@ -5,6 +5,7 @@
 # Create: 07/03/2021
 # Latest Modify: 04/27/2023
 # Description: Mecanum Model Turn Around
+# This file is used in 16th National University Students Intelligent Car Race
 
 import rospy
 from geometry_msgs.msg import Twist

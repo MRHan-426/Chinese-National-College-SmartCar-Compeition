@@ -1,11 +1,18 @@
 #! /usr/bin/env python2
 # -*- coding: utf-8 -*-
+
+# Author: ziqi han
+# Create: 03/25/2022
+# Latest Modify: 04/27/2023
+# Description: Logic of the project, Direct the car from starting point to end point
+# This file is used in 17th National University Students Intelligent Car Race
+
 from numpy.core.numeric import moveaxis
 import rospy
 from darknet_ros_msgs.msg import classes
 import actionlib
 from actionlib_msgs.msg import *
-from move_base_msgs.msg import MoveBaseActionResult,MoveBaseGoal,MoveBaseAction
+from move_base_msgs.msg import MoveBaseActionResult, MoveBaseGoal, MoveBaseAction
 from geometry_msgs.msg import Pose, Point, Quaternion, PoseStamped
 from sensor_msgs.msg import Image
 from std_msgs.msg import Int8
@@ -14,37 +21,40 @@ import cv2
 import os
 
 
-# ===========================================初始化===========================================
-PARKING_ID = 2 # 1,2,3
+# ===========================================initialization===========================================
+PARKING_ID = 2  # 1,2,3
 
-# ---------------------------设定二维码目标点-----------------------------------
+# ---------------------------Set the QR code target point-----------------------------------
 target_qrcode = Pose(Point(2.609, 1.150, 0.000), Quaternion(0.000, 0.000, 0.996, 0.0927))
 
-#转弯过渡点
-#Position(2.116, 1.730, 0.000), Orientation(0.000, 0.000, 0.006, 1.000)
-target_temp = Pose(Point(2.116, 1.730, 0.000),Quaternion(0.000, 0.000, 0.006, 1.000))
+# turn transition point
+# Position(2.116, 1.730, 0.000), Orientation(0.000, 0.000, 0.006, 1.000)
+target_temp = Pose(Point(2.116, 1.730, 0.000), Quaternion(0.000, 0.000, 0.006, 1.000))
 
-# ---------------------------设定停车位置目标点-----------------------------------
-if PARKING_ID == 1:         #D1
-#Position(1.217, 2.702, 0.000), Orientation(0.000, 0.000, 0.714, 0.700)
-    target_parking = Pose(Point(1.25, 2.75, 0.000), Quaternion(0.000, 0.000, 0.714, 0.700))            #Pose(Point(1.217, 2.702, 0.000), Quaternion(0.000, 0.000, 0.714, 0.700))
-elif PARKING_ID == 2:       #D2
+# ---------------------------Set the parking position target point-----------------------------------
+# D1
+if PARKING_ID == 1:
+    # Position(1.217, 2.702, 0.000), Orientation(0.000, 0.000, 0.714, 0.700)
+    # Pose(Point(1.217, 2.702, 0.000), Quaternion(0.000, 0.000, 0.714, 0.700))
+    target_parking = Pose(Point(1.25, 2.75, 0.000), Quaternion(0.000, 0.000, 0.714, 0.700))
+# D2
+elif PARKING_ID == 2:
     target_parking = Pose(Point(0.75, 2.65, 0.000), Quaternion(0.000, 0.000, 0.7, 0.714))
-elif PARKING_ID == 3:       #D3
+# D3
+elif PARKING_ID == 3:
     target_parking = Pose(Point(0.324, 2.65, 0.000), Quaternion(0.000, 0.000, 0.726, 0.687))
-
 
 
 pos_flag = 0
 """
-0: 起始位置
-1：到达7区识别位置
-2：到达6区识别位置
-3: 6区过渡点
-4：到达二维码识别位置
-5：到达C区
-6：C区转完
-7：到达终点
+0: start position
+1: Arrive at the identification position in Zone 7
+2: Arrive at the identification position in Zone 6
+3: Zone 6 transition point
+4: Arrive at the QR code recognition position
+5: Arrive at Area C
+6: The transfer in area C is completed
+7: reach the end
 """
 
 reached_temp_flag = False
@@ -63,14 +73,13 @@ def goto_point(point):
 
 
 def mic_call_back(data):
-    # 前往转弯过渡点
+    # go to turn transition point
     goto_point(target_temp)
-
-
 
 
 def classes_callback(msg):
     return
+
 
 def goal_callback(msg):
     global pos_flag
@@ -84,13 +93,13 @@ def img_callback(data):
     global bridge, pos_flag, reached_temp_flag, broadcast_finished_flag
     global reached_end_flag
 
-# -------------------到达临时位置点---------------------------------------
+# -------------------Arrive at the temporary location---------------------------------------
     if pos_flag == 1 and not reached_temp_flag:
-        # 前往二维码
+        # Go to the QR code
         goto_point(target_qrcode)
         reached_temp_flag = True
- 
-# -------------------到达二维码识别点---------------------------------------
+
+# -------------------Arrive at the QR code recognition point---------------------------------------
     elif pos_flag == 2 and not broadcast_finished_flag:
         print('reached qrcode position......')
         cv_img = bridge.imgmsg_to_cv2(data, "bgr8")
@@ -102,15 +111,14 @@ def img_callback(data):
         startmsg = Int8()
         startmsg.data = 1
         reached_qr_pub.publish(startmsg)
-        # 前往第三个人物识别点
+        # Go to the third character identification point
         rospy.sleep(1)
         goto_point(target_parking)
         broadcast_finished_flag = True
 
-# -------------------到达终点---------------------------------------
+# -------------------reach destination---------------------------------------
     elif pos_flag == 3 and not reached_end_flag:
         rospy.loginfo("reached END!!!!!!!!!!!!!!!!!!!!!!!!")
-        
 
         # broadcast person
         person_num = 2
@@ -125,7 +133,6 @@ def img_callback(data):
         rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
         rospy.loginfo('glasses_num: %d, longhair_num: %d' % (glasses_num, longhair_num))
         rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
-        
 
         reached_end_flag = True
     else:
@@ -142,7 +149,5 @@ if __name__ == '__main__':
         '/move_base_simple/goal', PoseStamped, queue_size=1)
     img_pub = rospy.Publisher('/final_image', Image, queue_size=1)
     reached_qr_pub = rospy.Publisher('/reached_qr', Int8, queue_size=1)
-
     move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-
     rospy.spin()

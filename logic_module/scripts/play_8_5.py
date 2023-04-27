@@ -1,5 +1,12 @@
 #! /usr/bin/env python2
 # -*- coding: utf-8 -*-
+
+# Author: ziqi han
+# Create: 08/05/2022
+# Latest Modify: 04/27/2023
+# Description: Logic of the project, Direct the car from starting point to end point
+# This file is used in 17th National University Students Intelligent Car Race
+
 from numpy.core.numeric import moveaxis
 import rospy
 from darknet_ros_msgs.msg import BoundingBoxes
@@ -13,76 +20,74 @@ from cv_bridge import CvBridge
 import cv2
 import os
 
-# ===========================================初始化===========================================
+# ===========================================initialization===========================================
 
-# ---------------------------设定目标点-----------------------------------
+# ---------------------------set target point-----------------------------------
 
-# # B房间 Plan1
+# # Room B Plan1
 # target_detectionB = Pose(Point(5.0, -0.5, 0), Quaternion(0.000, 0.000, 0.0, 1))
 
-# # C房间
+# # Room C
 # target_detectionC = Pose(Point(3.0,-0.75, 0.000), Quaternion(0.000, 0.000, -0.705, 0.709))
-# # D房间
+# # Room D
 # target_detectionD = Pose(Point(2, 1, 0.000), Quaternion(0.000, 0.000, -0.791, 0.612))
 
-# # B房间   40.56 Normal
+# # Room B   40.56 Normal
 # target_detectionB = Pose(Point(5.0, -0.5, 0), Quaternion(0.000, 0.000, 0.0, 1))
-# # C房间
+# # Room C
 # target_detectionC = Pose(Point(3.25,-0.5, 0.000), Quaternion(0.000, 0.000, -0.705, 0.709))
-# # D房间
+# # Room D
 # target_detectionD = Pose(Point(1.5, -0.5, 0.000), Quaternion(0.000, 0.000, -0.707, 0.707))
 
 
-# B房间   Extreme
-target_detectionB = Pose(Point(4.75, 1.25, 0), Quaternion(0.000, 0.000,-0.705, 0.709))
-# C房间
-target_detectionC = Pose(Point(3.25,0.25, 0.000), Quaternion(0.000, 0.000, -0.705, 0.709))
-# D房间
+# Room B   Extreme
+target_detectionB = Pose(Point(4.75, 1.25, 0), Quaternion(0.000, 0.000, -0.705, 0.709))
+# Room C
+target_detectionC = Pose(Point(3.25, 0.25, 0.000), Quaternion(0.000, 0.000, -0.705, 0.709))
+# Room D
 target_detectionD = Pose(Point(2.20, 1.20, 0.000), Quaternion(0.000, 0.000, -0.707, 0.707))
 
 
 # #8.5-8:54
-# # B房间   Extreme
+# # Room B   Extreme
 # target_detectionB = Pose(Point(4.978, 1.376, 0.000), Quaternion(0.000, 0.000, -0.304, 0.953))
 # target_detectionB_1=Pose(Point(4.851, 0.967, 0.000), Quaternion(0.000, 0.000, -0.746, 0.666))
-# # C房间
+# # Room C
 # target_detectionC = Pose(Point(3.293, 0.306, 0.000), Quaternion(0.000, 0.000, -0.293, 0.956))
 # target_detectionC_1 = Pose(Point(3.185, 0.236, 0.000), Quaternion(0.000, 0.000, -0.643, 0.765))
 
-# # D房间
+# # Room D
 # target_detectionD = Pose(Point(2.25, 1.25, 0.000), Quaternion(0.000, 0.000, -0.707, 0.707))
 
-# 增加点位
+# add points
 test1 = Pose(Point(2.068, 1.308, 0.000), Quaternion(0.000, 0.000, -0.752, 0.659))
 test2 = Pose(Point(1.756, 0.171, 0.000), Quaternion(0.000, 0.000, -0.732, 0.681))
 test3 = Pose(Point(1.575, -1.118, 0.000), Quaternion(0.000, 0.0000, -0.753, 0.658))
-test4 = Pose(Point(0.953, -0.868, 0.000), Quaternion(0.000, 0.000,0.852, 0.524))
-test5 = Pose(Point(0.786, 0.282, 0.000), Quaternion(0.000, 0.000, 0.473,0.881))
+test4 = Pose(Point(0.953, -0.868, 0.000), Quaternion(0.000, 0.000, 0.852, 0.524))
+test5 = Pose(Point(0.786, 0.282, 0.000), Quaternion(0.000, 0.000, 0.473, 0.881))
 test6 = Pose(Point(1.349, 1.142, 0.0000), Quaternion(0.000, 0.000, 0.278, 0.961))
 
 
-
-
-
-
-# ---------------------------设定停车位置目标点-----------------------------------
+# ---------------------------Set the parking position target point-----------------------------------
 target_parking = Pose(Point(0.3, 2.75, 0.000), Quaternion(0.000, 0.000, 1.000, 0))
 
 pos_flag = 0
 """
-0: 起始位置
-1：到达B房间
-2：到达C房间
-3: 到达D房间
-4: 到达终点
+0: start position
+1: Arrive in room B
+2: Arrive in room C
+3: Arrive in room D
+4: reach the end
 """
 bridge = CvBridge()
 B_list = []
 C_list = []
 D_list = []
 pos_B_finish = 0
-pos_C_finish  = 0
+pos_C_finish = 0
 pos_D_finish = 0
+
+
 def goto_point(point):
     goal_pose = PoseStamped()
     goal_pose.header.frame_id = "map"
@@ -91,12 +96,12 @@ def goto_point(point):
 
 
 def mic_call_back(data):
-    # 前往第一个点
+    # Go to the first point
     goto_point(target_detectionB)
 
 
 def classes_callback(msg):
-    global pos_flag,pos_B_finish,pos_C_finish,pos_D_finish
+    global pos_flag, pos_B_finish, pos_C_finish, pos_D_finish
     global B_list, C_list, D_list
 
     # img_class = msg.bounding_boxes[0].Class
@@ -107,33 +112,35 @@ def classes_callback(msg):
 
     if img_ymin < 320:
         if pos_flag == 0:
-            loc_pose = rospy.wait_for_message('pose',PoseWithCovarianceStamped)
-            if loc_pose.pose.pose.position.y <1.5:
+            loc_pose = rospy.wait_for_message('pose', PoseWithCovarianceStamped)
+            if loc_pose.pose.pose.position.y < 1.5:
                 B_list.append(img_id)
 
-        elif pos_flag == 1 :
-            loc_pose = rospy.wait_for_message('pose',PoseWithCovarianceStamped)
-            if loc_pose.pose.pose.position.y <1.5:
-                if loc_pose.pose.pose.position.x >4:
+        elif pos_flag == 1:
+            loc_pose = rospy.wait_for_message('pose', PoseWithCovarianceStamped)
+            if loc_pose.pose.pose.position.y < 1.5:
+                if loc_pose.pose.pose.position.x > 4:
                     B_list.append(img_id)
                 else:
                     C_list.append(img_id)
 
         elif pos_flag == 2:
-            loc_pose = rospy.wait_for_message('pose',PoseWithCovarianceStamped)
-            if loc_pose.pose.pose.position.y <1.5:
+            loc_pose = rospy.wait_for_message('pose', PoseWithCovarianceStamped)
+            if loc_pose.pose.pose.position.y < 1.5:
 
-                if loc_pose.pose.pose.position.x >2.5:
+                if loc_pose.pose.pose.position.x > 2.5:
                     C_list.append(img_id)
                 else:
                     D_list.append(img_id)
 
         elif pos_flag == 3:
-            loc_pose = rospy.wait_for_message('pose',PoseWithCovarianceStamped)
-            if loc_pose.pose.pose.position.y < 1.5 :
+            loc_pose = rospy.wait_for_message('pose', PoseWithCovarianceStamped)
+            if loc_pose.pose.pose.position.y < 1.5:
                 D_list.append(img_id)
 
-# 新函数！取出现频次前三的标号
+# Get the labels with the top three occurrences
+
+
 def filter_list(my_list):
     dic = {}
     my_newlist = []
@@ -149,6 +156,7 @@ def filter_list(my_list):
         if len(my_newlist) >= 3:
             break
     return my_newlist
+
 
 def goal_callback(msg):
     global pos_flag
@@ -174,24 +182,24 @@ def goal_callback(msg):
         #     goto_point(test5)
         # elif pos_flag ==8:
         #     goto_point(test6)
-        
+
         elif pos_flag == 3:
             rospy.sleep(0.5)
             goto_point(target_parking)
-        elif pos_flag ==4:
+        elif pos_flag == 4:
             rospy.loginfo("======================================")
             rospy.loginfo(B_list)
-            rospy.loginfo("======================================")   
+            rospy.loginfo("======================================")
             rospy.loginfo(C_list)
             rospy.loginfo("======================================")
             rospy.loginfo(D_list)
             rospy.loginfo("======================================")
 
-            # 取出现频次前三的标号
+            # Get the top three labels with the frequency
             B_list = filter_list(B_list)
             C_list = filter_list(C_list)
             D_list = filter_list(D_list)
-            # 如果需要观察结果取消注释
+            # uncomment if observations are needed
             # rospy.loginfo("======================================")
             # rospy.loginfo(B_list)
             # rospy.loginfo("======================================")
@@ -200,7 +208,8 @@ def goal_callback(msg):
             # rospy.loginfo(D_list)
             # rospy.loginfo("======================================")
 
-            # 同时出现多个标志物，优先级餐厅＞卧室＞客厅
+            # Multiple markers appear at the same time,
+            # priority restaurant > bedroom > living room
             for i in B_list:
                 if i in [24, 25, 26, 27, 28, 29, 30, 31]:
                     flag = True
@@ -288,15 +297,14 @@ def goal_callback(msg):
                         type_D = "Kitchen"
                         break
 
-            if type_B==type_C :
-                type_C="Unknown"
-            elif type_D==type_C :
-                type_D="Unknown"
-            elif type_D==type_B :
-                type_D="Unknown"
+            if type_B == type_C:
+                type_C = "Unknown"
+            elif type_D == type_C:
+                type_D = "Unknown"
+            elif type_D == type_B:
+                type_D = "Unknown"
 
-            rospy.loginfo("B:%s C:%s D:%s"%(type_B,type_C,type_D))
-
+            rospy.loginfo("B:%s C:%s D:%s" % (type_B, type_C, type_D))
 
             if type_B == "Kitchen" and type_C == "Bedroom" and type_D == "Livingroom":
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
@@ -307,7 +315,6 @@ def goal_callback(msg):
             elif type_B == "Kitchen" and type_C == "Bedroom" and type_D == "Unknown":
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
 
-
             elif type_B == "Kitchen" and type_C == "Livingroom" and type_D == "Bedroom":
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/2.wav")
             elif type_B == "Unknown" and type_C == "Livingroom" and type_D == "Bedroom":
@@ -316,7 +323,6 @@ def goal_callback(msg):
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/2.wav")
             elif type_B == "Kitchen" and type_C == "Livingroom" and type_D == "Unknown":
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/2.wav")
-
 
             elif type_B == "Bedroom" and type_C == "Kitchen" and type_D == "Livingroom":
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/3.wav")
@@ -336,7 +342,6 @@ def goal_callback(msg):
             elif type_B == "Bedroom" and type_C == "Livingroom" and type_D == "Unknown":
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/4.wav")
 
-
             elif type_B == "Livingroom" and type_C == "Kitchen" and type_D == "Bedroom":
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
             elif type_B == "Unknown" and type_C == "Kitchen" and type_D == "Bedroom":
@@ -347,38 +352,39 @@ def goal_callback(msg):
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
 
             elif (type_B == "Livingroom" and type_C == "Unknown" and type_D == "Unknown") \
-                or (type_B == "Unknown" and type_C == "Kitchen" and type_D == "Unknown") \
-                or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Bedroom"):
+                    or (type_B == "Unknown" and type_C == "Kitchen" and type_D == "Unknown") \
+                    or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Bedroom"):
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
             elif (type_B == "Livingroom" and type_C == "Unknown" and type_D == "Unknown") \
-                or (type_B == "Unknown" and type_C == "Bedroom" and type_D == "Unknown") \
-                or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Kitchen"):
+                    or (type_B == "Unknown" and type_C == "Bedroom" and type_D == "Unknown") \
+                    or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Kitchen"):
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/5.wav")
             elif (type_B == "Bedroom" and type_C == "Unknown" and type_D == "Unknown") \
-                or (type_B == "Unknown" and type_C == "Livingroom" and type_D == "Unknown") \
-                or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Kitchen"):
+                    or (type_B == "Unknown" and type_C == "Livingroom" and type_D == "Unknown") \
+                    or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Kitchen"):
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/4.wav")
 
             else:
                 os.system("play /home/ucar/ucar_ws/src/logic_module/wav/5.wav")
 
+
 if __name__ == '__main__':
     rospy.init_node('play', anonymous=True)
 
-    # 语音唤醒后，麦克风模块发布 start_others消息，msg = 1，此时进入mic_call_back函数。
+    # After voice wake-up, the microphone module publishes a start_others message, with msg = 1, entering the mic_call_back function at this point.
     rospy.Subscriber("/start_others", Int8, mic_call_back)
 
-    # 每次导航完成时，move_base节点会发布 move_base/result，消息类型是MoveBaseActionResult，此时进入goal_callback函数。
+    # After each navigation is completed, the move_base node publishes move_base/result, with the message type being MoveBaseActionResult, entering the goal_callback function at this point.
     rospy.Subscriber("move_base/result", MoveBaseActionResult, goal_callback)
 
-    # 每次拍照后，yolo节点会识别图片，并发布"/darknet_ros/bounding_boxes"，此时进入classes_callback函数。
-    rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes , classes_callback)
+    # After each photo is taken, the yolo node will recognize the image and publish "/darknet_ros/bounding_boxes", entering the classes_callback function at this point.
+    rospy.Subscriber("/darknet_ros/bounding_boxes", BoundingBoxes, classes_callback)
 
-    # 发布/move_base_simple/goal，给小车指定下一个坐标点。
+    # Publish /move_base_simple/goal to specify the next coordinate point for the robot.
     goal_pub = rospy.Publisher(
         '/move_base_simple/goal', PoseStamped, queue_size=1)
 
-    # move_base的初始化
+    # Initialization of move_base.
     move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
 
     rospy.spin()

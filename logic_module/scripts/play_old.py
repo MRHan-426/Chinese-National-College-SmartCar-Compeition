@@ -1,5 +1,12 @@
 #! /usr/bin/env python2
 # -*- coding: utf-8 -*-
+
+# Author: ziqi han
+# Create: 03/24/2021
+# Latest Modify: 04/27/2023
+# Description: Logic of the project, Direct the car from starting point to end point
+# This file is used in 16th National University Students Intelligent Car Race
+
 from numpy.core.numeric import moveaxis
 import rospy
 from darknet_ros_msgs.msg import BoundingBoxes
@@ -13,38 +20,40 @@ from cv_bridge import CvBridge
 import cv2
 import os
 
-# ===========================================初始化===========================================
+# ===========================================initialization===========================================
 
-# ---------------------------设定目标点-----------------------------------
+# ---------------------------set target point-----------------------------------
 
-# B房间
+# Room B
 target_detectionB = Pose(Point(4.995, -0.476, 0), Quaternion(0.000, 0.000, 0.468, 0.884))
 
-# C房间
+# Room C
 target_detectionC = Pose(Point(3.28, -1.002, 0.000), Quaternion(0.000, 0.000, -0.705, 0.709))
-# D房间
+# Room D
 target_detectionD = Pose(Point(1.324, -0.429, 0.000), Quaternion(0.000, 0.000, -0.431, 0.903))
 
-# 增加点位
+# add points
 # target_detectionD3 = Pose(Point(2.016, 1.844, 0.000), Quaternion(0.000, 0.000, 0.705, 0.71))
-# ---------------------------设定停车位置目标点-----------------------------------
+
+# ---------------------------Set the parking position target point-----------------------------------
 target_parking = Pose(Point(0.292, 2.817, 0.000), Quaternion(0.000, 0.000, 1.000, -0.002))
 
 pos_flag = 0
 """
-0: 起始位置
-1：到达B房间
-2：到达C房间
-3: 到达D房间
-4: 到达终点
+0: start position
+1: Arrive in room B
+2: Arrive in room C
+3: Arrive in room D
+4: reach the end
 """
-# 任务完成标志
+# Mission completed flag
 reached_B_flag = False
 reached_C_flag = False
 reached_D_flag = False
 reached_end_flag = False
 
 bridge = CvBridge()
+
 
 def goto_point(point):
     goal_pose = PoseStamped()
@@ -54,7 +63,7 @@ def goto_point(point):
 
 
 def mic_call_back(data):
-    # 前往第一个点
+    # Go to the first point
     goto_point(target_detectionB)
 
 
@@ -64,23 +73,23 @@ def classes_callback(msg):
 
     img_class = msg.bounding_boxes.Class
     img_id = msg.bounding_boxes.id
-    if pos_flag == 0 :
+    if pos_flag == 0:
         B_list.append(img_id)
-        if img_id >= 0 and img_id <= 19:    
+        if img_id >= 0 and img_id <= 19:
             pos_flag = 1
             reached_B_flag = True
             goto_point(target_detectionC)
 
     elif pos_flag == 1:
         C_list.append(img_id)
-        if img_id >= 0 and img_id <= 19:   
+        if img_id >= 0 and img_id <= 19:
             pos_flag = 2
             reached_C_flag = True
             goto_point(target_detectionD)
 
     elif pos_flag == 2:
         D_list.append(img_id)
-        if img_id >= 0 and img_id <= 19:   
+        if img_id >= 0 and img_id <= 19:
             pos_flag = 3
             reached_D_flag = True
             goto_point(target_parking)
@@ -97,9 +106,9 @@ def goal_callback(msg):
 def img_callback(data):
     # define picture to_down' coefficient of ratio
     global bridge, pos_flag, Img_1, Img_2, Img_3
-    global reached_B_flag,reached_C_flag,reached_D_flag,reached_D3_flag,reached_end_flag
+    global reached_B_flag, reached_C_flag, reached_D_flag, reached_D3_flag, reached_end_flag
     global myDetectNum
-    # -------------------到达第一个人物识别点---------------------------------------
+    # -------------------Reach the first person identification point---------------------------------------
     if pos_flag == 1 and not reached_B_flag:
         print('reaching 1st detect position.......')
         Img_1 = data
@@ -107,12 +116,12 @@ def img_callback(data):
         cv2.imwrite(
             '/home/ucar/ucar_ws/src/logic_module/data/B.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
-        # 前往B2房间
+        # Go to room B2
         goto_point(target_detectionC)
         # rospy.sleep(1)
         reached_B_flag = True
 
-    # -------------------到达C房间---------------------------------------
+    # -------------------Arrive in room C---------------------------------------
     elif pos_flag == 2 and not reached_C_flag:
         print('reaching 2nd detect position.......')
         Img_2 = data
@@ -120,12 +129,12 @@ def img_callback(data):
         cv2.imwrite(
             '/home/ucar/ucar_ws/src/logic_module/data/C.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
-        # 前往D房间
+        # go to room D
         goto_point(target_detectionD)
         # rospy.sleep(1)
         reached_C_flag = True
 
-    # -------------------到达第三个人物识别点---------------------------------------
+    # -------------------Arrived at the third person identification point---------------------------------------
     elif pos_flag == 3 and not reached_D_flag:
         print('reaching 3rd detect position.......')
         Img_3 = data
@@ -133,19 +142,19 @@ def img_callback(data):
         cv2.imwrite(
             '/home/ucar/ucar_ws/src/logic_module/data/D.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
-        # 前往D房间
+        # go to room D
         goto_point(target_detectionD3)
         # rospy.sleep(1)
         reached_D_flag = True
 
-    # -------------------到达第三个人物识别点---------------------------------------
+    # -------------------Arriving at the third person identification point ---------------------------------------
 
     elif pos_flag == 4 and not reached_D3_flag:
         goto_point(target_parking)
         # rospy.sleep(1)
         reached_D3_flag = True
 
-    # -------------------到达终点---------------------------------------
+    # -------------------reach destination---------------------------------------
     elif pos_flag == 5 and not reached_end_flag:
         rospy.loginfo("reached END!!!!!!!!!!!!!!!!!!!!!!!!")
 
@@ -155,7 +164,7 @@ def img_callback(data):
         longhair_num = myDetectNum.get_total_longhair()
         if longhair_num > 2:
             longhair_num = 2
-        # 语音播报长发/戴眼镜人数
+        # Voice broadcast the number of people with long hair/glasses
         # broadcast person
         person_num = 2
         os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
@@ -188,26 +197,26 @@ def img_callback(data):
 if __name__ == '__main__':
     rospy.init_node('play', anonymous=True)
 
-    # 语音唤醒后，麦克风模块发布 start_others消息，msg = 1，此时进入mic_call_back函数。
+    # After voice wake-up, the microphone module publishes a start_others message, with msg = 1, entering the mic_call_back function at this point.
     rospy.Subscriber("/start_others", Int8, mic_call_back)
 
-    # 每次导航完成时，move_base节点会发布 move_base/result，消息类型是MoveBaseActionResult，此时进入goal_callback函数。
+    # After each navigation is completed, the move_base node publishes move_base/result, with the message type being MoveBaseActionResult, entering the goal_callback function at this point.
     rospy.Subscriber("move_base/result", MoveBaseActionResult, goal_callback)
 
-    # 每次拍照后，yolo节点会识别图片，并发布"/darknet_ros/bounding_boxes"，此时进入classes_callback函数。
-    rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes , classes_callback)
+    # After each photo is taken, the yolo node will recognize the image and publish /darknet_ros/classes_num, entering the classes_callback function at this point.
+    rospy.Subscriber("/darknet_ros/classes_num", classes, classes_callback)
 
-    # 订阅照相机节点，实时获得图片。推荐使用此法，尽量不要直接调用cv.capture。
+    # Subscribe to the camera node to get images in real-time. It is recommended to use this method and avoid directly calling cv.capture.
     rospy.Subscriber('usb_cam/image_raw', Image, img_callback)
 
-    # 发布/move_base_simple/goal，给小车指定下一个坐标点。
+    # Publish /move_base_simple/goal to specify the next coordinate point for the robot.
     goal_pub = rospy.Publisher(
         '/move_base_simple/goal', PoseStamped, queue_size=1)
 
-    # 发布/final_image，给yolo节点，让它识别。
+    # Publish /final_image to the yolo node, letting it recognize the image.
     img_pub = rospy.Publisher('/final_image', Image, queue_size=1)
 
-    # move_base的初始化
+    # Initialization of move_base.
     move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
 
     rospy.spin()

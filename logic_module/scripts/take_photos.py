@@ -5,6 +5,7 @@
 # Create: 05/20/2021
 # Latest Modify: 04/27/2023
 # Description: Take photos to build dataset
+# This file is used in 16th National University Students Intelligent Car Race
 
 import numpy as np
 import time
