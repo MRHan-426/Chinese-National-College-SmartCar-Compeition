@@ -105,7 +105,7 @@ def img_callback(data):
         Img_1 = data
         img_pub.publish(Img_1)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/B.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/B.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
         # 前往B2房间
         goto_point(target_detectionC)
@@ -118,7 +118,7 @@ def img_callback(data):
         Img_2 = data
         img_pub.publish(Img_2)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/C.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/C.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
         # 前往D房间
         goto_point(target_detectionD)
@@ -131,7 +131,7 @@ def img_callback(data):
         Img_3 = data
         img_pub.publish(Img_3)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/D.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/D.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
         # 前往D房间
         goto_point(target_detectionD3)
@@ -158,13 +158,13 @@ def img_callback(data):
         # 语音播报长发/戴眼镜人数
         # broadcast person
         person_num = 2
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/1.wav")
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/model_%d.wav" % person_num)
+        os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/model_%d.wav" % person_num)
         # # broadcast longhair
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/longhair_%d.wav" % longhair_num)
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/longhair_%d.wav" % longhair_num)
         # # broadcast glasses
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/glasses_%d.wav" % glasses_num)
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/tts_sample_4.wav")
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/glasses_%d.wav" % glasses_num)
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/tts_sample_4.wav")
         # rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
         # rospy.loginfo('glasses_num: %d, longhair_num: %d' % (glasses_num, longhair_num))
         # rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')

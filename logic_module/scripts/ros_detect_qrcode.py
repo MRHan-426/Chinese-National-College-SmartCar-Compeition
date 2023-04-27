@@ -23,14 +23,14 @@ qr_finished_flag = False
 def play_QR_code(QR_code_id):
     id_str = str(QR_code_id)
     dish_id = int(id_str[2])+1  # 1,2,3
-    os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/dish_%d.wav" % dish_id)
+    os.system("play /home/ucar/ucar_ws/src/logic_module/wav/dish_%d.wav" % dish_id)
 
 
 
 def img_callback(data):
     global qr_finished_flag
     if not qr_finished_flag:
-        aruco_img = cv2.imread('/home/ucar/ucar_ws/src/logic_moudle/qr_detection/qr_code.jpg')
+        aruco_img = cv2.imread('/home/ucar/ucar_ws/src/logic_module/qr_detection/qr_code.jpg')
         _, QR_code_id, _ = aruco.detectMarkers(aruco_img,aruco_dict,parameters=parameters)
         
         # 如果检测到二维码
@@ -47,7 +47,7 @@ def img_callback(data):
         # else:
         #     gray = cv2.cvtColor(aruco_img, cv2.COLOR_BGR2GRAY)
         #     equ = cv2.equalizeHist(gray)
-        #     cv2.imwrite('/home/ucar/ucar_ws/src/logic_moudle/qr_detection/qr_code_equ.jpg', equ)
+        #     cv2.imwrite('/home/ucar/ucar_ws/src/logic_module/qr_detection/qr_code_equ.jpg', equ)
         #     corners, QR_code_id, rejectedImgPoints = aruco.detectMarkers(equ,aruco_dict,parameters=parameters)
         #     if QR_code_id is not None:
         #         print('detected QR by equalized image!')

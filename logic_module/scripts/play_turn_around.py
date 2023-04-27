@@ -180,7 +180,7 @@ def img_callback(data):
         Img_B1 = data
         #img_pub.publish(Img_B1)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/B1.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/B1.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
         reached_B_flag = True
 
@@ -193,7 +193,7 @@ def img_callback(data):
         Img_B2 = data
         #img_pub.publish(Img_B2)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/B2.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/B2.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
 
         ### 旋转120° ###
@@ -205,7 +205,7 @@ def img_callback(data):
         Img_B3 = data
         #img_pub.publish(Img_B3)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/B3.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/B3.jpg',
             bridge.imgmsg_to_cv2(Img_B3, "bgr8"))
         # 前往C房间
         goto_point(target_detectionC)
@@ -216,7 +216,7 @@ def img_callback(data):
         Img_C1 = data
         #img_pub.publish(Img_C1)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/C1.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/C1.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
         reached_C_flag = True
 
@@ -229,7 +229,7 @@ def img_callback(data):
         Img_C2 = data
         img_pub.publish(Img_C2)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/C2.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/C2.jpg',
             bridge.imgmsg_to_cv2(Img_C2, "bgr8"))
 
         # 前往D房间
@@ -241,7 +241,7 @@ def img_callback(data):
         Img_D1 = data
         img_pub.publish(Img_D1)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/D1.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/D1.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
         reached_D_flag = True
 
@@ -254,7 +254,7 @@ def img_callback(data):
         Img_D2 = data
         img_pub.publish(Img_D2)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/D2.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/D2.jpg',
             bridge.imgmsg_to_cv2(Img_D2, "bgr8"))
 
         ### 旋转120° ###
@@ -266,7 +266,7 @@ def img_callback(data):
         Img_D3 = data
         img_pub.publish(Img_D3)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/D3.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/D3.jpg',
             bridge.imgmsg_to_cv2(Img_D3, "bgr8"))
 
         # 前往D门口的暂停点位
@@ -293,13 +293,13 @@ def img_callback(data):
         # 语音播报长发/戴眼镜人数
         # broadcast person
         person_num = 2
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/1.wav")
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/model_%d.wav" % person_num)
+        os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/model_%d.wav" % person_num)
         # # broadcast longhair
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/longhair_%d.wav" % longhair_num)
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/longhair_%d.wav" % longhair_num)
         # # broadcast glasses
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/glasses_%d.wav" % glasses_num)
-        # os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/tts_sample_4.wav")
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/glasses_%d.wav" % glasses_num)
+        # os.system("play /home/ucar/ucar_ws/src/logic_module/wav/tts_sample_4.wav")
         # rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
         # rospy.loginfo('glasses_num: %d, longhair_num: %d' % (glasses_num, longhair_num))
         # rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')

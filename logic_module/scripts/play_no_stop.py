@@ -96,7 +96,7 @@ def img_callback(data):
         cv_img = bridge.imgmsg_to_cv2(data, "bgr8")
         aruco_img = cv2.flip(cv_img, 1)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/qr_detection/qr_code.jpg', aruco_img)
+            '/home/ucar/ucar_ws/src/logic_module/qr_detection/qr_code.jpg', aruco_img)
         print('written qrcode into local file......')
         # publish QR message
         startmsg = Int8()
@@ -116,12 +116,12 @@ def img_callback(data):
         person_num = 2
         longhair_num = 1
         glasses_num = 1
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/model_%d.wav" % person_num)
+        os.system("play /home/ucar/ucar_ws/src/logic_module/wav/model_%d.wav" % person_num)
         # broadcast longhair
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/longhair_%d.wav" % longhair_num)
+        os.system("play /home/ucar/ucar_ws/src/logic_module/wav/longhair_%d.wav" % longhair_num)
         # broadcast glasses
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/glasses_%d.wav" % glasses_num)
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/tts_sample_4.wav")
+        os.system("play /home/ucar/ucar_ws/src/logic_module/wav/glasses_%d.wav" % glasses_num)
+        os.system("play /home/ucar/ucar_ws/src/logic_module/wav/tts_sample_4.wav")
         rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
         rospy.loginfo('glasses_num: %d, longhair_num: %d' % (glasses_num, longhair_num))
         rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')

@@ -309,68 +309,68 @@ def goal_callback(msg):
                 type_D="Unknown"
 
             if type_B == "Kitchen" and type_C == "Bedroom" and type_D == "Livingroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/1.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
             elif type_B == "Unknown" and type_C == "Bedroom" and type_D == "Livingroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/1.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
             elif type_B == "Kitchen" and type_C == "Unknown" and type_D == "Livingroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/1.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
             elif type_B == "Kitchen" and type_C == "Bedroom" and type_D == "Unknown":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/1.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/1.wav")
 
 
             elif type_B == "Kitchen" and type_C == "Livingroom" and type_D == "Bedroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/2.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/2.wav")
             elif type_B == "Unknown" and type_C == "Livingroom" and type_D == "Bedroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/2.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/2.wav")
             elif type_B == "Kitchen" and type_C == "Unknown" and type_D == "Bedroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/2.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/2.wav")
             elif type_B == "Kitchen" and type_C == "Livingroom" and type_D == "Unknown":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/2.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/2.wav")
 
 
             elif type_B == "Bedroom" and type_C == "Kitchen" and type_D == "Livingroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/3.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/3.wav")
             elif type_B == "Unknown" and type_C == "Kitchen" and type_D == "Livingroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/3.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/3.wav")
             elif type_B == "Bedroom" and type_C == "Unknown" and type_D == "Livingroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/3.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/3.wav")
             elif type_B == "Bedroom" and type_C == "Kitchen" and type_D == "Unknown":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/3.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/3.wav")
 
             elif type_B == "Bedroom" and type_C == "Livingroom" and type_D == "Kitchen":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/4.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/4.wav")
             elif type_B == "Unknown" and type_C == "Livingroom" and type_D == "Kitchen":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/4.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/4.wav")
             elif type_B == "Bedroom" and type_C == "Unknown" and type_D == "Kitchen":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/4.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/4.wav")
             elif type_B == "Bedroom" and type_C == "Livingroom" and type_D == "Unknown":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/4.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/4.wav")
 
 
             elif type_B == "Livingroom" and type_C == "Kitchen" and type_D == "Bedroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/6.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
             elif type_B == "Unknown" and type_C == "Kitchen" and type_D == "Bedroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/6.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
             elif type_B == "Livingroom" and type_C == "Unknown" and type_D == "Bedroom":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/6.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
             elif type_B == "Livingroom" and type_C == "Kitchen" and type_D == "Unknown":
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/6.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
 
             elif (type_B == "Livingroom" and type_C == "Unknown" and type_D == "Unknown") \
                 or (type_B == "Unknown" and type_C == "Kitchen" and type_D == "Unknown") \
                 or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Bedroom"):
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/6.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/6.wav")
             elif (type_B == "Livingroom" and type_C == "Unknown" and type_D == "Unknown") \
                 or (type_B == "Unknown" and type_C == "Bedroom" and type_D == "Unknown") \
                 or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Kitchen"):
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/5.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/5.wav")
             elif (type_B == "Bedroom" and type_C == "Unknown" and type_D == "Unknown") \
                 or (type_B == "Unknown" and type_C == "Livingroom" and type_D == "Unknown") \
                 or (type_B == "Unknown" and type_C == "Unknown" and type_D == "Kitchen"):
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/4.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/4.wav")
 
             else:
-                os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/5.wav")
+                os.system("play /home/ucar/ucar_ws/src/logic_module/wav/5.wav")
 
 if __name__ == '__main__':
     rospy.init_node('play', anonymous=True)

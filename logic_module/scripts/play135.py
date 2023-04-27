@@ -64,14 +64,14 @@ elif PARKING_ID == 3:
 
 pos_flag = 0
 """
-0: 起始位置
-1：到达7区识别位置
-2：到达6区识别位置
-3: 6区过渡点
-4：到达二维码识别位置
-5：到达C区
-6：C区转完
-7：到达终点
+0: start position
+1: Arrive at the identification position in Zone 7
+2: Arrive at the identification position in Zone 6
+3: Zone 6 transition point
+4: Arrive at the QR code recognition position
+5: Arrive at Area C
+6: The transfer in area C is completed
+7: reach the end
 """
 reached_1_flag = False
 reached_2_flag = False
@@ -116,7 +116,7 @@ def goto_point(point):
 
 
 def mic_call_back(data):
-    # 前往第一个识别点
+    # Go to the first recognition point
     goto_point(target_temp)
 
 
@@ -178,78 +178,81 @@ def img_callback(data):
     global bridge, pos_flag, reached_temp_flag, Img_1, Img_2, Img_3, Img_4, broadcast_finished_flag
     global reached_1_flag, reached_2_flag, reached_3_flag, reached_4_flag, reached_end_flag
     global myDetectNum
-# # -------------------到达第一个人物识别点---------------------------------------
+# # -------------------Reach the first person identification point---------------------------------------
 #     if pos_flag == 1 and not reached_1_flag:
 #         Img_1 = data
-#         print('reaching 111111111st detect position.......')
+#         print('reaching 1st detect position.......')
 #         cv2.imwrite(
-#             '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/1.jpg',
+#             '/home/ucar/ucar_ws/src/logic_module/data/1.jpg',
 #             bridge.imgmsg_to_cv2(data, "bgr8"))
-#         # 前往第二个人物识别点
+#         # Go to the second person identification point
 #         goto_point(target_detection2)
 
 #         img_pub.publish(Img_1)
 #         # rospy.sleep(1)
 #         reached_1_flag = True
 
-# # -------------------到达第二个人物识别点---------------------------------------
+# # -------------------Reach the second person identification point---------------------------------------
 #     elif pos_flag == 2 and not reached_2_flag:
 #         Img_2 = data
-#         print('reaching 2222222222nd detect position.......')
+#         print('reaching 2nd detect position.......')
 #         cv2.imwrite(
-#             '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/2.jpg',
+#             '/home/ucar/ucar_ws/src/logic_module/data/2.jpg',
 #             bridge.imgmsg_to_cv2(data, "bgr8"))
 #         img_pub.publish(Img_2)
 #         goto_point(target_temp)
 #         # rospy.sleep(1)
 #         reached_2_flag = True
 
-# -------------------到达临时位置点---------------------------------------
+# -------------------Arrive at the temporary location---------------------------------------
     if pos_flag == 3 and not reached_temp_flag:
-        # 前往二维码
+        # Go to QR code
         goto_point(target_qrcode)
         reached_temp_flag = True
 
-# -------------------到达二维码识别点---------------------------------------
+# -------------------Arrive at the QR code recognition point---------------------------------------
     elif pos_flag == 4 and not broadcast_finished_flag:
         print('reached qrcode position......')
         cv_img = bridge.imgmsg_to_cv2(data, "bgr8")
         aruco_img = cv2.flip(cv_img, 1)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/qr_detection/qr_code.jpg', aruco_img)
+            '/home/ucar/ucar_ws/src/logic_module/qr_detection/qr_code.jpg', aruco_img)
         print('written qrcode into local file......')
         # publish QR message
         startmsg = Int8()
         startmsg.data = 1
         reached_qr_pub.publish(startmsg)
-        # 前往第三个人物识别点
+        # Go to the third person identification point
         rospy.sleep(1)
         goto_point(target_detection3)
         broadcast_finished_flag = True
-# -------------------到达第三个人物识别点---------------------------------------
+
+# -------------------Arrived at the third person identification point---------------------------------------
     elif pos_flag == 5 and not reached_3_flag:
         print('reaching 3rd detect position.......')
         Img_3 = data
         img_pub.publish(Img_3)
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/3.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/3.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
-        # 前往第四个人物识别点
+        # Go to the fourth person identification point
         goto_point(target_detection4)
         # rospy.sleep(1)
         reached_3_flag = True
-# -------------------到达第四个人物识别点---------------------------------------
+
+# -------------------Arrived at the fourth person identification point---------------------------------------
     elif pos_flag == 6 and not reached_4_flag:
         print('reaching 4th detect position.......')
         Img_4 = data
         cv2.imwrite(
-            '/home/ucar/ucar_ws/src/logic_moudle/sound_play/data/4.jpg',
+            '/home/ucar/ucar_ws/src/logic_module/data/4.jpg',
             bridge.imgmsg_to_cv2(data, "bgr8"))
-        # 前往终点
+        # go to end
         goto_point(target_parking)
         img_pub.publish(Img_4)
         reached_4_flag = True
-# -------------------到达终点---------------------------------------
+
+# -------------------reach destination---------------------------------------
     elif pos_flag == 7 and not reached_end_flag:
         rospy.loginfo("reached END!!!!!!!!!!!!!!!!!!!!!!!!")
 
@@ -262,14 +265,14 @@ def img_callback(data):
         # broadcast person
         person_num = 2
         os.system(
-            "play /home/ucar/ucar_ws/src/logic_moudle/wav/model_%d.wav" % person_num)
+            "play /home/ucar/ucar_ws/src/logic_module/wav/model_%d.wav" % person_num)
         # broadcast longhair
         os.system(
-            "play /home/ucar/ucar_ws/src/logic_moudle/wav/longhair_%d.wav" % longhair_num)
+            "play /home/ucar/ucar_ws/src/logic_module/wav/longhair_%d.wav" % longhair_num)
         # broadcast glasses
         os.system(
-            "play /home/ucar/ucar_ws/src/logic_moudle/wav/glasses_%d.wav" % glasses_num)
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/tts_sample_4.wav")
+            "play /home/ucar/ucar_ws/src/logic_module/wav/glasses_%d.wav" % glasses_num)
+        os.system("play /home/ucar/ucar_ws/src/logic_module/wav/tts_sample_4.wav")
         rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
         rospy.loginfo('glasses_num: %d, longhair_num: %d' %
                       (glasses_num, longhair_num))
@@ -290,7 +293,5 @@ if __name__ == '__main__':
         '/move_base_simple/goal', PoseStamped, queue_size=1)
     img_pub = rospy.Publisher('/final_image', Image, queue_size=1)
     reached_qr_pub = rospy.Publisher('/reached_qr', Int8, queue_size=1)
-
     move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-
     rospy.spin()
