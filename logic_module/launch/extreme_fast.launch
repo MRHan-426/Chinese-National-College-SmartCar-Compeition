@@ -1,0 +1,14 @@
+<launch>
+  <arg name="device" default="" />
+
+  <node name="play" pkg="logic_module" type="play_8_5.py" output="screen"/>
+
+  <!--node name="play" pkg="logic_module" type="play135.py" output="screen"/-->
+
+  <!--node name="play" pkg="logic_module" type="play147.py" output="screen"/-->
+
+  <!--node name="play" pkg="logic_module" type="play156.py" output="screen"/-->
+
+  <!--node name="play" pkg="logic_module" type="play_no_stop.py" output="screen"/-->
+
+</launch>

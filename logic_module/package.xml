@@ -3,18 +3,14 @@
   href="http://download.ros.org/schema/package_format3.xsd"
   schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-   <name>sound_play</name>
+   <name>logic_module</name>
    <version>0.3.11</version>
    <description>
-      sound_play provides a ROS node that translates commands on a ROS topic (<tt>robotsound</tt>) into sounds. The node supports built-in sounds, playing OGG/WAV files, and doing speech synthesis via festival. C++ and Python bindings allow this node to be used without understanding the details of the message format, allowing faster development and resilience to message format changes.
+      logic_module of the whole project.
    </description>
-   <maintainer email="namniart@gmail.com">Austin Hendrix</maintainer>
-   <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
-   <author>Blaise Gassend</author>
+   <maintainer email="ziqihan@umich.edu">Ziqi Han</maintainer>
+   <author>Ziqi Han</author>
    <license>BSD</license>
-   <url type="website">http://ros.org/wiki/sound_play</url>
-   <url type="repository">https://github.com/ros-drivers/audio_common</url>
-   <url type="bugtracker">https://github.com/ros-drivers/audio_common/issues</url>
 
    <buildtool_depend>catkin</buildtool_depend>
    <buildtool_depend condition="$ROS_PYTHON_VERSION == 2">python-setuptools</buildtool_depend>

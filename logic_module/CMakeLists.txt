@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-project(sound_play)
+project(logic_module)
 
 find_package(catkin REQUIRED COMPONENTS message_generation roscpp actionlib_msgs)
 
@@ -17,7 +17,7 @@ catkin_install_python(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(FILES
-  soundplay_node.launch
+  launch/soundplay_node.launch
   # test.launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 

@@ -54,7 +54,7 @@
 
 
   <include file="$(find darknet_ros)/launch/yolo_v4.launch" /> 
-  <include file="$(find sound_play)/soundplay_node.launch" />
+  <include file="$(find logic_module)/launch/soundplay_node.launch" />
   <include file="$(find xf_mic_asr_offline)/launch/xf_mic_asr_offline.launch" />
 
 </launch>

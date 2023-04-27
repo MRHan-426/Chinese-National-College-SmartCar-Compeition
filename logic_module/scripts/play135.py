@@ -1,11 +1,17 @@
 #! /usr/bin/env python2
 # -*- coding: utf-8 -*-
+
+# Author: ziqi han
+# Create: 03/19/2021
+# Latest Modify: 04/27/2023
+# Description: Logic of the project, Direct the car from starting point to end point
+
 from numpy.core.numeric import moveaxis
 import rospy
 from darknet_ros_msgs.msg import classes
 import actionlib
 from actionlib_msgs.msg import *
-from move_base_msgs.msg import MoveBaseActionResult,MoveBaseGoal,MoveBaseAction
+from move_base_msgs.msg import MoveBaseActionResult, MoveBaseGoal, MoveBaseAction
 from geometry_msgs.msg import Pose, Point, Quaternion, PoseStamped
 from sensor_msgs.msg import Image
 from std_msgs.msg import Int8
@@ -13,38 +19,47 @@ from cv_bridge import CvBridge
 import cv2
 import os
 
+# ===========================================Initialization===========================================
+PARKING_ID = 2  # 1,2,3
 
-# ===========================================初始化===========================================
-PARKING_ID = 2 # 1,2,3
+# ---------------------------Set the QR code target point-----------------------------------
+target_qrcode = Pose(Point(2.609, 1.150, 0.000),
+                     Quaternion(0.000, 0.000, 0.996, 0.0927))
 
+# ---------------------------Set the target point for person recognition-----------------------------------
+# 1st person recognition point
+target_detection1 = Pose(Point(1.910, 3.262, 0.000),
+                         Quaternion(0.000, 0.000, -0.056, 0.998))
+# 2nd person recognition point
+target_detection2 = Pose(Point(1.809, 2.332, 0.000),
+                         Quaternion(0.000, 0.000, -0.706, 0.709))
+# 3rd person recognition point
+target_detection3 = Pose(Point(0.287, 1.176, 0.000),
+                         Quaternion(0.000, 0.000, 0.719, 0.694))
+# 4th person recognition point
+target_detection4 = Pose(Point(0.287, 1.176, 0.000),
+                         Quaternion(0.000, 0.000, 0.192, 0.981))
 
-# ---------------------------设定二维码目标点-----------------------------------
-target_qrcode = Pose(Point(2.609, 1.150, 0.000), Quaternion(0.000, 0.000, 0.996, 0.0927))
+# turn transition point
+# Position(2.116, 1.730, 0.000), Orientation(0.000, 0.000, 0.006, 1.000)
+target_temp = Pose(Point(2.116, 1.730, 0.000),
+                   Quaternion(0.000, 0.000, 0.006, 1.000))
 
-# ---------------------------设定人物识别目标点-----------------------------------
-# 第1个人物识别点
-target_detection1 = Pose(Point(1.910, 3.262, 0.000), Quaternion(0.000, 0.000, -0.056, 0.998))
-# 第2个人物识别点
-target_detection2 = Pose(Point(1.809, 2.332, 0.000), Quaternion(0.000, 0.000, -0.706, 0.709))  
-# 第3个人物识别点
-target_detection3 = Pose(Point(0.287, 1.176, 0.000), Quaternion(0.000, 0.000, 0.719, 0.694))
-# 第4个人物识别点
-target_detection4 = Pose(Point(0.287, 1.176, 0.000),Quaternion(0.000, 0.000, 0.192, 0.981))
-
-#转弯过渡点
-#in
-#Position(2.116, 1.730, 0.000), Orientation(0.000, 0.000, 0.006, 1.000)
-target_temp = Pose(Point(2.116, 1.730, 0.000),Quaternion(0.000, 0.000, 0.006, 1.000))
-
-# ---------------------------设定停车位置目标点-----------------------------------
-if PARKING_ID == 1:         #D1
-#Position(1.217, 2.702, 0.000), Orientation(0.000, 0.000, 0.714, 0.700)
-    target_parking = Pose(Point(1.25, 2.75, 0.000), Quaternion(0.000, 0.000, 0.714, 0.700))            #Pose(Point(1.217, 2.702, 0.000), Quaternion(0.000, 0.000, 0.714, 0.700))
-elif PARKING_ID == 2:       #D2
-    target_parking = Pose(Point(0.75, 2.65, 0.000), Quaternion(0.000, 0.000, 0.7, 0.714))
-elif PARKING_ID == 3:       #D3
-    target_parking = Pose(Point(0.324, 2.65, 0.000), Quaternion(0.000, 0.000, 0.726, 0.687))
-
+# ---------------------------Set the parking position target point-----------------------------------
+# D1
+if PARKING_ID == 1:
+    # Position(1.217, 2.702, 0.000), Orientation(0.000, 0.000, 0.714, 0.700)
+    # Pose(Point(1.217, 2.702, 0.000), Quaternion(0.000, 0.000, 0.714, 0.700))
+    target_parking = Pose(Point(1.25, 2.75, 0.000),
+                          Quaternion(0.000, 0.000, 0.714, 0.700))
+# D2
+elif PARKING_ID == 2:
+    target_parking = Pose(Point(0.75, 2.65, 0.000),
+                          Quaternion(0.000, 0.000, 0.7, 0.714))
+# D3
+elif PARKING_ID == 3:
+    target_parking = Pose(Point(0.324, 2.65, 0.000),
+                          Quaternion(0.000, 0.000, 0.726, 0.687))
 
 
 pos_flag = 0
@@ -70,6 +85,7 @@ Img_2 = Image()
 Img_3 = Image()
 Img_4 = Image()
 
+
 class DetectNum():
     def __init__(self):
         self.glasses_num_pic1 = 0
@@ -80,8 +96,10 @@ class DetectNum():
         self.longhair_num_pic3 = 0
         self.glasses_num_pic4 = 0
         self.longhair_num_pic4 = 0
+
     def get_total_glasses(self):
         return self.glasses_num_pic1 + self.glasses_num_pic2 + self.glasses_num_pic3 + self.glasses_num_pic4
+
     def get_total_longhair(self):
         return self.longhair_num_pic1 + self.longhair_num_pic2 + self.longhair_num_pic3 + self.longhair_num_pic4
 
@@ -100,7 +118,6 @@ def goto_point(point):
 def mic_call_back(data):
     # 前往第一个识别点
     goto_point(target_temp)
-
 
 
 def classes_callback(msg):
@@ -128,7 +145,8 @@ def classes_callback(msg):
         myDetectNum.longhair_num_pic3 = msg.long_hair_cut_num
         rospy.loginfo("================================")
         rospy.loginfo('recognition position = 3')
-        rospy.loginfo('glass = %d,  longhair = %d.' %(msg.glass_cut_num, msg.long_hair_cut_num))
+        rospy.loginfo('glass = %d,  longhair = %d.' %
+                      (msg.glass_cut_num, msg.long_hair_cut_num))
         # rospy.loginfo(msg)
         rospy.loginfo("================================")
     elif pos_flag == 6:
@@ -136,10 +154,10 @@ def classes_callback(msg):
         myDetectNum.longhair_num_pic4 = msg.long_hair_num
         rospy.loginfo("================================")
         rospy.loginfo('recognition position = 4')
-        rospy.loginfo('glass = %d,  longhair = %d.' %(msg.glass_num, msg.long_hair_num))
+        rospy.loginfo('glass = %d,  longhair = %d.' %
+                      (msg.glass_num, msg.long_hair_num))
         # rospy.loginfo(msg)
         rospy.loginfo("================================")
-
 
 
 def goal_callback(msg):
@@ -147,13 +165,12 @@ def goal_callback(msg):
     if msg.status.status == 3:
         if pos_flag == 0:
             pos_flag += 3
-        elif pos_flag ==5:
+        elif pos_flag == 5:
             rospy.sleep(2)
-            pos_flag +=1
+            pos_flag += 1
         elif pos_flag != 7:
             rospy.sleep(0.5)
             pos_flag += 1
-
 
 
 def img_callback(data):
@@ -192,7 +209,7 @@ def img_callback(data):
         # 前往二维码
         goto_point(target_qrcode)
         reached_temp_flag = True
- 
+
 # -------------------到达二维码识别点---------------------------------------
     elif pos_flag == 4 and not broadcast_finished_flag:
         print('reached qrcode position......')
@@ -203,7 +220,7 @@ def img_callback(data):
         print('written qrcode into local file......')
         # publish QR message
         startmsg = Int8()
-        startmsg.data = 1;
+        startmsg.data = 1
         reached_qr_pub.publish(startmsg)
         # 前往第三个人物识别点
         rospy.sleep(1)
@@ -237,23 +254,26 @@ def img_callback(data):
         rospy.loginfo("reached END!!!!!!!!!!!!!!!!!!!!!!!!")
 
         glasses_num = myDetectNum.get_total_glasses()
-        if glasses_num>2:
-            glasses_num=2
+        if glasses_num > 2:
+            glasses_num = 2
         longhair_num = myDetectNum.get_total_longhair()
         if longhair_num > 2:
             longhair_num = 2
         # broadcast person
         person_num = 2
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/model_%d.wav" % person_num)
+        os.system(
+            "play /home/ucar/ucar_ws/src/logic_moudle/wav/model_%d.wav" % person_num)
         # broadcast longhair
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/longhair_%d.wav" % longhair_num)
+        os.system(
+            "play /home/ucar/ucar_ws/src/logic_moudle/wav/longhair_%d.wav" % longhair_num)
         # broadcast glasses
-        os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/glasses_%d.wav" % glasses_num)
+        os.system(
+            "play /home/ucar/ucar_ws/src/logic_moudle/wav/glasses_%d.wav" % glasses_num)
         os.system("play /home/ucar/ucar_ws/src/logic_moudle/wav/tts_sample_4.wav")
         rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
-        rospy.loginfo('glasses_num: %d, longhair_num: %d' % (glasses_num, longhair_num))
+        rospy.loginfo('glasses_num: %d, longhair_num: %d' %
+                      (glasses_num, longhair_num))
         rospy.loginfo('+++++++++++++++++++++++++++++++++++++++')
-        
 
         reached_end_flag = True
     else:
