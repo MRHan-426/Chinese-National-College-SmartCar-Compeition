@@ -160,7 +160,5 @@ cython_debug/
 #.idea/
 *.avi
 *.zip
-*.png
-*.jpg
 *.wav
 .vscode/
