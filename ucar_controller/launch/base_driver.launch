@@ -4,7 +4,7 @@
     <!-- <rosparam command="load" file="$(find ucar_controller)/config/driver_params_xiao.yaml" /> -->
   </node>
   <!-- <node pkg="joy" name="joy_node" type="joy_node"/> -->
-     <!-- ******************使用ekf定位*****************-->
+     <!-- ******************Use ekf to locate*****************-->
   <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" >
 		<rosparam command="load" file="$(find ucar_controller)/config/ekf_params.yaml" />
 		<param name="publish_tf" value="true"/>
@@ -13,4 +13,4 @@
   <!-- <include file="$(find ucar_controller)/launch/tf_server.launch">
   </include> -->
 
-</launch> 
+</launch>

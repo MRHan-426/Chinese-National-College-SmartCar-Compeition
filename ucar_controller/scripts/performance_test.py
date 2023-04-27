@@ -1,4 +1,11 @@
 #! /usr/bin/env python
+
+# Author: ziqi han
+# Create: 02/14/2021
+# Latest Modify: 04/27/2023
+# Description: Calibrates the error of the robot in the angle through TF
+# This file is used in 16th National University Students Intelligent Car Race
+
 import rospy
 from geometry_msgs.msg import Twist, Quaternion
 from nav_msgs.msg import Odometry
@@ -8,9 +15,11 @@ import PyKDL
 from math import pi
 import random
 
+
 def quat_to_angle(quat):
     rot = PyKDL.Rotation.Quaternion(quat.x, quat.y, quat.z, quat.w)
     return rot.GetRPY()[2]
+
 
 def normalize_angle(angle):
     res = angle
@@ -19,6 +28,7 @@ def normalize_angle(angle):
     while res < -pi:
         res += 2.0 * pi
     return res
+
 
 class CalibrateAngular():
     def __init__(self):
@@ -31,8 +41,8 @@ class CalibrateAngular():
         # How fast will we check the odometry values?
         self.rate = rospy.get_param('~rate', 20)
 
-        self.speed = rospy.get_param('~speed', 0.3) # radians per second
-        self.tolerance = radians(rospy.get_param('tolerance', 1)) # degrees converted to radians
+        self.speed = rospy.get_param('~speed', 0.3)  # radians per second
+        self.tolerance = radians(rospy.get_param('tolerance', 1))  # degrees converted to radians
         self.odom_angular_scale_correction = rospy.get_param('~odom_angular_scale_correction', 1.0)
 
         # Publisher to control the robot's speed
@@ -51,21 +61,22 @@ class CalibrateAngular():
         rospy.sleep(2)
 
         # Make sure we see the odom and base frames
-        self.tf_listener.waitForTransform(self.odom_frame, self.base_frame, rospy.Time(), rospy.Duration(60.0))
+        self.tf_listener.waitForTransform(
+            self.odom_frame, self.base_frame, rospy.Time(), rospy.Duration(60.0))
 
         rospy.loginfo("Bring up rqt_reconfigure to control the test.")
 
         self.performance_test()
 
     def performance_test(self):
-         while not rospy.is_shutdown():
+        while not rospy.is_shutdown():
             # Get the current rotation angle from tf
             odom_angle = self.get_odom_angle()
 
             last_angle = odom_angle
             turn_angle = 0
-            test_angle = random.uniform(-3.14,3.14)
-            rospy.loginfo('test_angle: %f'%test_angle)
+            test_angle = random.uniform(-3.14, 3.14)
+            rospy.loginfo('test_angle: %f' % test_angle)
             test_angle = test_angle + odom_angle
             error = test_angle - turn_angle
 
@@ -80,7 +91,7 @@ class CalibrateAngular():
                 self.cmd_vel.publish(move_cmd)
                 r.sleep()
 
-                # Get the current rotation angle from tf                   
+                # Get the current rotation angle from tf
                 odom_angle = self.get_odom_angle()
 
                 # Compute how far we have gone since the last measurement
@@ -102,7 +113,8 @@ class CalibrateAngular():
     def get_odom_angle(self):
         # Get the current transform between the odom and base frames
         try:
-            (trans, rot)  = self.tf_listener.lookupTransform(self.odom_frame, self.base_frame, rospy.Time(0))
+            (trans, rot) = self.tf_listener.lookupTransform(
+                self.odom_frame, self.base_frame, rospy.Time(0))
         except (tf.Exception, tf.ConnectivityException, tf.LookupException):
             rospy.loginfo("TF Exception")
             return
@@ -110,16 +122,15 @@ class CalibrateAngular():
         # Convert the rotation from a quaternion to an Euler angle
         return quat_to_angle(Quaternion(*rot))
 
-
     def shutdown(self):
         # Always stop the robot when shutting down the node
         rospy.loginfo("Stopping the robot...")
         self.cmd_vel.publish(Twist())
         rospy.sleep(1)
 
+
 if __name__ == '__main__':
     try:
         CalibrateAngular()
     except:
         rospy.loginfo("Calibration terminated.")
-

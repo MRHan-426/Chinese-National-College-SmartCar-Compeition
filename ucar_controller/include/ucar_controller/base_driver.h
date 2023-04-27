@@ -6,7 +6,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/Joy.h>
 #include <iostream>
-#include <serial/serial.h>  //ROS的串口包 http://wjwwood.io/serial/doc/1.1.0/index.html
+#include <serial/serial.h>
 #include <math.h>
 #include <fstream>
 #include <ucar_controller/data_struct.h>
@@ -116,7 +116,7 @@ private:
   boost::thread* processThread_;
   boost::thread* writeThread_;
   boost::recursive_mutex Control_mutex_;
-  
+
   //version
   std::string ws_version_;
   std::string hw_version_;
@@ -133,13 +133,13 @@ private:
   double base_shape_a_,base_shape_b_;
 
   //position
-  
+
   //moving info
   double  linear_speed_min_;
   double angular_speed_min_;
   double  linear_speed_max_;
   double angular_speed_max_;
-  
+
   //sum info
   double Mileage_sum_;
     double Mileage_last_;
@@ -147,8 +147,8 @@ private:
   int cs_error_ = 0;
   uint32_t write_sn_ = 0;
   uint32_t read_sn_  = 0;
-  
-  //flages 
+
+  //flages
   bool read_first_;
   bool imu_frist_sn_;
 
@@ -194,7 +194,7 @@ private:
 
   string Mileage_file_name_;
   string Mileage_backup_file_name_;
-  
+
   //frame name
   string base_frame_, odom_frame_;
   string imu_frame_id_;
@@ -226,7 +226,7 @@ private:
 
   tf::TransformBroadcaster odom_broadcaster_;
 
-  serial::Serial serial_; //声明串口对象
+  serial::Serial serial_;
 
 };//baseBringup
 } //ucarController
