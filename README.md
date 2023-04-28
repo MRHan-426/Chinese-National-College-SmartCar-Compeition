@@ -7,14 +7,14 @@
 
 This repository is used to archive the code of the 16th and 17th Chinese National College SmartCar Competition(NCSC). 
 
-Our team stood out from 133 teams and won the **championship** in the 16th competition.
+Our team stood out from 127 teams from 98 colleges and won the **championship** in the 16th competition.
 
 The next year, our junior schoolmates won the national first prize in the 17th competition.
 
 ## **1.Introduction**
 As we just started to get familiar with ROS, we used and learned from many existing ros packages. 
 
-The project we worked on is more inclined to connect and integrate ros packages to achieve the required tasks of the competition. 
+The project we worked on is more inclined to connect and integrate ros packages to complete the competition. 
 
 Since the code depends on hardware, it cannot be run directly. Here is a brief introduction to the functions of each part.
 
