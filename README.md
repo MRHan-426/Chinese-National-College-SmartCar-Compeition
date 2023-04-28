@@ -11,6 +11,7 @@ Our team stood out from 127 teams from 98 colleges and won the **championship** 
 
 The next year, our junior schoolmates won the national first prize in the 17th competition.
 
+
 ## **1.Introduction**
 As we just started to get familiar with ROS, we used and learned from many existing ros packages. 
 
@@ -41,8 +42,23 @@ Since the code depends on hardware, it cannot be run directly. Here is a brief i
 
 └── CMakeLists.txt
 
+
 ## 2.Examples
+Since the code relies on specific hardware and cannot be directly reproduced, I have included two GIFs here to show the implementation results.
+
++ **Example1:** \
+Voice-activated mobile robot navigation. The intelligent car navigates to its destination, recognizing characters that may appear on plastic boards along the way, determining whether they have long hair and whether they are wearing glasses. Finally, it enters the parking area and outputs the recognition results.
+
+<p align="center">
+  <img src="https://github.com/MRHan-426/Chinese-National-College-SmartCar-Compeition/blob/master/.assets/example1.gif" alt="gif" width="66%" height="auto">
+</p>
 
 
++ **Example2:** \
+A collaborative work between a mobile robot and a robotic arm. The mobile robot navigates, recognizes images, and communicates with the robotic arm. The robotic arm then picks up the corresponding object type and places it on the mobile robot, which subsequently navigates to its destination.
+
+<p align="center">
+  <img src="https://github.com/MRHan-426/Chinese-National-College-SmartCar-Compeition/blob/master/.assets/example2.gif" alt="gif" width="66%" height="auto">
+</p>
 
 
